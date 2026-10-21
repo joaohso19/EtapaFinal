@@ -2,23 +2,25 @@
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../login/verifica_user.php';
 
-// Processa o formulário no topo antes de enviar qualquer HTML ao navegador
 $erro = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $titulo_novo = trim($_POST['titulo'] ?? '');
-    $tipo_novo = $_POST['tipo'] ?? 'filme';
+// Se enviou o formulário, cadastra antes de mostrar a página
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $titulo = trim($_POST['titulo']);
 
-    if (titulo_existe($conexao, $_SESSION['id'], $titulo_novo, $tipo_novo)) {
-        $erro = 'Você já adicionou "' . $titulo_novo . '" na sua vitrine.';
+    if (titulo_existe($conexao, $_SESSION['id'], $titulo, $_POST['tipo'])) {
+        $erro = 'Você já adicionou esse título na sua vitrine.';
     } else {
         $ok = cadastrar(
-            $conexao, $_SESSION['id'],
-            $titulo_novo, $tipo_novo,
-            $_POST['status'] ?? 'quero', $_POST['nota'] ?? null,
-            $_POST['review'] ?? '', $_POST['capa'] ?? ''
+            $conexao,
+            $_SESSION['id'],
+            $titulo,
+            $_POST['tipo'],
+            $_POST['status'],
+            $_POST['nota'],
+            $_POST['review'],
+            $_POST['capa']
         );
-
         if ($ok) {
             header("Location: /streamlist/app/read.php");
             exit();
@@ -40,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <main class="container">
         <h1>Adicionar filme ou série</h1>
-        
+
         <?php if ($erro != '') { ?>
             <p class="erro"><?php echo htmlspecialchars($erro); ?></p>
         <?php } ?>
@@ -113,21 +115,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     status.addEventListener('change', atualizaNota);
     atualizaNota();
 
-    // ---------- Seleção e Preview da Capa ----------
+    // ---------- Seleção e preview da capa ----------
     const capasDiv = document.getElementById('capas');
     const inputCapa = document.getElementById('capa');
     const previewCapa = document.getElementById('preview-capa');
     const semCapa = document.getElementById('sem-capa');
 
     function escolheCapa(url) {
-        if (!url) return;
         inputCapa.value = url;
         previewCapa.src = url;
         previewCapa.style.display = 'block';
-        if (semCapa) semCapa.style.display = 'none';
+        semCapa.style.display = 'none';
 
         // Destaca a capa clicada
-        document.querySelectorAll('.capa-opcao').forEach(img => {
+        document.querySelectorAll('.capa-opcao').forEach(function (img) {
             img.classList.toggle('selecionada', img.src === url);
         });
     }
@@ -136,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         inputCapa.value = '';
         previewCapa.src = '';
         previewCapa.style.display = 'none';
-    if (semCapa) semCapa.style.display = 'flex';
-}
+        semCapa.style.display = 'flex';
+    }
 
     // ---------- Busca de capas pelo título digitado ----------
     const titulo = document.getElementById('titulo');
@@ -148,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     async function buscaCapas() {
         const nome = titulo.value.trim();
         capasDiv.innerHTML = '';
-        limpaCapa();   // <- adicione esta linha
+        limpaCapa();
         if (nome.length < 2) return;
 
         // Guarda o número desta busca para ignorar respostas antigas
@@ -158,12 +159,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         capasDiv.innerHTML = '<span class="dica">Buscando...</span>';
         let capas = [];
         try {
-            // Busca primeiro o tipo escolhido; se vier pouca coisa, completa com o outro
+            // Busca primeiro o tipo escolhido; se não achar nada, tenta o outro
             if (tipo.value === 'filme') {
-            capas = await buscaFilmes(nome);
+                capas = await buscaFilmes(nome);
+                if (capas.length === 0) capas = await buscaSeries(nome);
             } else {
-            capas = await buscaSeries(nome);
-}
+                capas = await buscaSeries(nome);
+                if (capas.length === 0) capas = await buscaFilmes(nome);
+            }
         } catch (erro) {
             capasDiv.innerHTML = '<span class="dica">Não foi possível buscar as capas agora.</span>';
             return;
@@ -179,23 +182,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         capas.forEach(function (url) {
-        const img = document.createElement('img');
-        img.src = url;
-        img.className = 'capa-opcao';
-        img.addEventListener('click', function () {
-        escolheCapa(url);
-        });
-
-        capasDiv.appendChild(img);
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'capa-opcao';
+            img.addEventListener('click', function () {
+                escolheCapa(url);
+            });
+            capasDiv.appendChild(img);
         });
     }
 
-        // Busca ao digitar (espera 400ms depois da última tecla)
-        titulo.addEventListener('input', function () {
-            clearTimeout(timer);
-            timer = setTimeout(buscaCapas, 400);
-        });
+    // Busca ao digitar (espera 400ms depois da última tecla)
+    titulo.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(buscaCapas, 400);
+    });
 
-        // Busca de novo se mudar o tipo
-        tipo.addEventListener('change', buscaCapas);
-        </script>
+    // Busca de novo se mudar o tipo
+    tipo.addEventListener('change', buscaCapas);
+    </script>
+</body>
+</html>

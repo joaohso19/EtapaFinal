@@ -18,7 +18,6 @@
         <!-- ---------- Destaque ---------- -->
         <section class="home-hero">
             <div class="home-texto">
-                <span class="home-etiqueta">Sua vitrine pessoal de streaming</span>
                 <h1>Tudo o que você assiste, <span>organizado</span> em um só lugar.</h1>
                 <p>
                     Cadastre filmes e séries, acompanhe o que já viu, o que está vendo
@@ -56,55 +55,6 @@
                         <span class="selo selo-quero">Quero assistir</span>
                     </div>
                     <p class="mini-titulo">Filme</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ---------- Como funciona ---------- -->
-        <section class="home-secao">
-            <h2>Como funciona</h2>
-            <p class="home-sub">Três passos e a sua vitrine está pronta.</p>
-
-            <div class="passos">
-                <div class="passo">
-                    <span class="passo-num">1</span>
-                    <h3>Crie sua conta</h3>
-                    <p>Cadastre-se com e-mail e senha. Cada pessoa tem a sua própria vitrine.</p>
-                </div>
-                <div class="passo">
-                    <span class="passo-num">2</span>
-                    <h3>Adicione títulos</h3>
-                    <p>Digite o nome, escolha a capa encontrada pela API e defina o status.</p>
-                </div>
-                <div class="passo">
-                    <span class="passo-num">3</span>
-                    <h3>Acompanhe tudo</h3>
-                    <p>Veja sua nota média, filtre por status e edite quando quiser.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ---------- Recursos ---------- -->
-        <section class="home-secao">
-            <h2>O que você pode fazer</h2>
-            <p class="home-sub">Simples de usar, com o que importa para organizar sua lista.</p>
-
-            <div class="recursos">
-                <div class="recurso">
-                    <h3>Status do título</h3>
-                    <p>Separe o que você quer assistir, está assistindo ou já assistiu.</p>
-                </div>
-                <div class="recurso">
-                    <h3>Notas e reviews</h3>
-                    <p>Avalie de 1 a 10 e guarde um comentário sobre cada título.</p>
-                </div>
-                <div class="recurso">
-                    <h3>Capas automáticas</h3>
-                    <p>Ao digitar o nome, as capas aparecem para você escolher.</p>
-                </div>
-                <div class="recurso">
-                    <h3>Busca e filtros</h3>
-                    <p>Encontre qualquer título pelo nome ou pela aba de status.</p>
                 </div>
             </div>
         </section>

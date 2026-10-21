@@ -1,8 +1,8 @@
 <?php
 // Conexão com o banco PostgreSQL (mesmo estilo da aula)
 // Troque os dados abaixo pelos do seu banco
-$host = "192.168.10.51";
-$dbname = "teste_st";
+$host = "localhost";
+$dbname = "joao";
 $user = "joao";
 $pass = "jotinha";
 

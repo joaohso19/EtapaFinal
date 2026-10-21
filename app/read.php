@@ -4,13 +4,8 @@ require_once __DIR__ . '/../login/verifica_user.php';
 
 $titulos = relatorio($conexao, $_SESSION['id']);
 
-// contagens e nota média calculadas aqui mesmo, a partir da lista
-$e = [
-    'total' => 0, 'quero' => 0, 'assistindo' => 0, 'assistido' => 0,
-    'filmes' => 0, 'series' => 0, 'media' => null
-];
-$soma_notas = 0;
-$qtd_notas = 0;
+// contagem de títulos para os números das abas
+$e = ['total' => 0, 'quero' => 0, 'assistindo' => 0, 'assistido' => 0];
 
 foreach ($titulos as $t) {
     $e['total']++;
@@ -18,17 +13,6 @@ foreach ($titulos as $t) {
     if ($t['status'] == 'quero') { $e['quero']++; }
     if ($t['status'] == 'assistindo') { $e['assistindo']++; }
     if ($t['status'] == 'assistido') { $e['assistido']++; }
-
-    if ($t['tipo'] == 'filme') { $e['filmes']++; } else { $e['series']++; }
-
-    if ($t['nota']) {
-        $soma_notas = $soma_notas + $t['nota'];
-        $qtd_notas++;
-    }
-}
-
-if ($qtd_notas > 0) {
-    $e['media'] = $soma_notas / $qtd_notas;
 }
 
 // nomes que aparecem na tela para cada status
@@ -62,15 +46,6 @@ if (isset($_GET['busca'])) {
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
     <main class="container">
-
-        <div class="stats">
-            <div class="stat">
-                <strong><?php if ($e['media'] !== null) { echo number_format($e['media'], 1, ',', '.'); } else { echo '—'; } ?></strong>
-                <span>Nota média</span>
-            </div>
-            <div class="stat"><strong><?php echo $e['filmes']; ?></strong><span>Filmes</span></div>
-            <div class="stat"><strong><?php echo $e['series']; ?></strong><span>Séries</span></div>
-        </div>
 
         <form class="busca" action="" method="get">
             <input type="hidden" name="filtro" value="<?php echo htmlspecialchars($filtro); ?>">
